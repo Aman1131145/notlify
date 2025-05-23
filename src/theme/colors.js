@@ -1,4 +1,5 @@
-//This is the dark theme
+//This is the dark
+
 export const colors = {
     primary: {
         main: '#9F7AEA',
@@ -52,6 +53,7 @@ export const colors = {
 };
 
 // This is the light theme
+
 // export const colors = {
 //     primary: {
 //         main: '#6B46C1',
