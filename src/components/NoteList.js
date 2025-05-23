@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Card, CardActions, CardContent, Chip, Container, Dialog, Grid, IconButton, Paper, Typography, Zoom } from '@mui/material'
 import SearchNote from './SearchNote';
 import { CloudDone, CloudOff, Delete } from '@mui/icons-material';
@@ -42,7 +42,7 @@ function NoteList() {
             window.removeEventListener('online', handleOnline);
             clearInterval(intervalId);
         }
-    })
+    }, [])
 
     const loadNotes = async () => {
         const allNotes = await db.notes.toArray();
@@ -69,22 +69,18 @@ function NoteList() {
         };
         setSelectedNote(newNote);
         setIsEditorOpen(true);
-        await db.notes.add(newNote);
-        setNotes(prev => [
-            newNote,
-            ...prev
-        ]);
-        if (navigator.onLine) syncNotes(db).catch(console.error);
     }
 
     return (
         <Container maxWidth="xl" sx={{
             height: '100%',
-            backgroundColor: colors.background.default
+            backgroundColor: colors.background.default,
+            padding: 2,
+            borderRadius: '0.5rem'
         }}>
             <SearchNote
                 search={searchNote}
-                createNote={() => setIsEditorOpen(true)}
+                createNote={createNewNote}
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
             />
@@ -199,9 +195,7 @@ function NoteList() {
                         onClose={() => setIsEditorOpen(false)}
                         onDelete={(id) => {
                             db.notes.delete(id);
-                            setNotes(prev =>
-                                prev.filter(n => n.id !== id)
-                            )
+                            setNotes(prev => prev.filter(n => n.id !== id));
                         }}
                         onSave={loadNotes}
                         isNewNote={!notes.some(n => n.id === selectedNote.id)}

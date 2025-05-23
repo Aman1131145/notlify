@@ -1,62 +1,108 @@
+//This is the dark theme
 export const colors = {
-    // Primary colors
     primary: {
-        main: '#6B46C1', // Purple
-        light: '#9F7AEA',
-        dark: '#553C9A',
+        main: '#9F7AEA',
+        light: '#B794F4',
+        dark: '#6B46C1',
     },
-    // Secondary colors
     secondary: {
-        main: '#48BB78', // Green
-        light: '#68D391',
-        dark: '#38A169',
+        main: '#68D391',
+        light: '#9AE6B4',
+        dark: '#48BB78',
     },
-    // Background colors
     background: {
-        default: '#F7FAFC',
-        paper: '#FFFFFF',
-        card: '#EDF2F7',
+        default: '#1A202C',
+        paper: '#2D3748',
+        card: '#2D3748',
     },
-    // Text colors
     text: {
-        primary: '#1A202C',
-        secondary: '#4A5568',
-        disabled: '#A0AEC0',
+        primary: '#F7FAFC',
+        secondary: '#E2E8F0',
+        disabled: '#718096',
     },
-    // Status colors
     status: {
-        online: '#48BB78', // Green
-        offline: '#E53E3E', // Red
-        synced: '#48BB78', // Green
-        unsynced: '#E53E3E', // Red
+        online: '#68D391',
+        offline: '#FC8181',
+        synced: '#68D391',
+        unsynced: '#FC8181',
     },
-    // UI Element colors
     ui: {
-        border: '#E2E8F0',
-        divider: '#EDF2F7',
-        hover: '#EBF4FF',
-        active: '#BEE3F8',
+        border: '#4A5568',
+        divider: '#2D3748',
+        hover: '#2C5282',
+        active: '#2B6CB0',
     },
-    // Component specific colors
+
     components: {
         noteEditor: {
-            background: '#F7FAFC',
-            header: '#EDF2F7',
-            toolbar: '#E2E8F0',
+            background: '#2D3748',
+            header: '#1A202C',
+            toolbar: '#2D3748',
         },
         searchBar: {
-            background: '#FFFFFF',
-            border: '#E2E8F0',
+            background: '#2D3748',
+            border: '#4A5568',
         },
         card: {
-            background: '#FFFFFF',
-            border: '#E2E8F0',
-            hover: '#EBF4FF',
+            background: '#2D3748',
+            border: '#4A5568',
+            hover: '#2C5282',
         },
     },
 };
 
-// Theme configuration for Material-UI
+// This is the light theme
+// export const colors = {
+//     primary: {
+//         main: '#6B46C1',
+//         light: '#9F7AEA',
+//         dark: '#553C9A',
+//     },
+//     secondary: {
+//         main: '#48BB78',
+//         light: '#68D391',
+//         dark: '#38A169',
+//     },
+//     background: {
+//         default: '#F7FAFC',
+//         paper: '#FFFFFF',
+//         card: '#EDF2F7',
+//     },
+//     text: {
+//         primary: '#1A202C',
+//         secondary: '#4A5568',
+//         disabled: '#A0AEC0',
+//     },
+//     status: {
+//         online: '#48BB78',
+//         offline: '#E53E3E',
+//         synced: '#48BB78',
+//         unsynced: '#E53E3E',
+//     },
+//     ui: {
+//         border: '#E2E8F0',
+//         divider: '#EDF2F7',
+//         hover: '#EBF4FF',
+//         active: '#BEE3F8',
+//     },
+
+//     components: {
+//         noteEditor: {
+//             background: '#F7FAFC',
+//             header: '#EDF2F7',
+//             toolbar: '#E2E8F0',
+//         },
+//         searchBar: {
+//             background: '#FFFFFF',
+//             border: '#E2E8F0',
+//         },
+//         card: {
+//             background: '#FFFFFF',
+//             border: '#E2E8F0',
+//             hover: '#EBF4FF',
+//         },
+//     },
+// };
 export const theme = {
     palette: {
         primary: colors.primary,

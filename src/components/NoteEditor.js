@@ -8,23 +8,22 @@ import ReactMarkdown from 'react-markdown';
 import { colors } from '../theme/colors';
 
 function NoteEditor({ note, onClose, onDelete, onSave, isNewNote }) {
+
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [selectedTab, setSelectedTab] = useState('write');
     const [saveStatus, setSaveStatus] = useState({ show: false, message: '', severity: 'success' })
 
     useEffect(() => {
-        if (note) {
-            setTitle(note.title || '');
-            setContent(note.content || '');
-        }
+        setTitle(note.title);
+        setContent(note.content);
     }, [note])
 
     const saveNote = useCallback(async (newTitle, newContent) => {
-        if (!newTitle.trim() && !newContent.trim()) {
+        if (!newTitle.trim() || !newContent.trim()) {
             setSaveStatus({
                 show: true,
-                message: 'Please fill all the fields',
+                message: 'Please add a title or content before saving',
                 severity: 'error'
             });
             return;
@@ -36,11 +35,9 @@ function NoteEditor({ note, onClose, onDelete, onSave, isNewNote }) {
                 updatedAt: new Date().toISOString(),
                 syncStatus: navigator.onLine ? 'synced' : 'unsynced'
             };
+            console.log('is new note', isNewNote)
             if (isNewNote) {
-                await db.notes.add({
-                    ...note,
-                    ...updates
-                })
+                await db.notes.add({ ...note, ...updates });
             } else {
                 await db.notes.update(note.id, updates);
             }
@@ -71,7 +68,14 @@ function NoteEditor({ note, onClose, onDelete, onSave, isNewNote }) {
         ...prev,
         show: false
     }))
-    const handleDelete = () => isNewNote ? onClose() : onDelete(note.id);
+    const handleDelete = () => {
+        if (isNewNote) {
+            onDelete(note.id);
+            onClose();
+        } else {
+            onDelete(note.id);
+        }
+    };
     return (
         <Paper
             sx={{
@@ -172,7 +176,24 @@ function NoteEditor({ note, onClose, onDelete, onSave, isNewNote }) {
                             '& .mde-header': {
                                 bgcolor: colors.components.noteEditor.toolbar,
                                 borderRadius: '0.5rem 0.5rem 0 0',
-                                borderBottom: `2px solid ${colors.ui.border}`
+                                borderBottom: `2px solid ${colors.ui.border}`,
+                                '& button': {
+                                    color: colors.text.secondary,
+                                    '&:hover': { background: colors.ui.hover }
+                                }
+                            }, '& .mde-textarea-wrapper textarea': {
+                                padding: '1rem!important',
+                                fontSize: '1.1rem!important',
+                                lineHeight: '1.6!important',
+                                background: `${colors.background.paper}!important`,
+                                color: `${colors.text.primary}!important`,
+                                minHeight: '400px!important'
+                            },
+                            '& .mde-preview': {
+                                padding: '1rem',
+                                background: colors.background.paper,
+                                '& h1': { color: colors.primary.main },
+                                '& code': { background: colors.ui.border }
                             },
                             '& .mde-tabs button': {
                                 transition: 'all 0.2s',
