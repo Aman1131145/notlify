@@ -2,7 +2,7 @@ import { Box, Button, Paper, TextField } from '@mui/material'
 import { Add, Search } from '@mui/icons-material'
 import React, { useState } from 'react'
 
-function SearchNote(search, createNote) {
+function SearchNote({search, createNote}) {
     const [searchTerm, setSearchTerm] = useState('');
     return (
         <Box sx={{ mb: 4 }}>
@@ -41,7 +41,7 @@ function SearchNote(search, createNote) {
                     <Button
                         variant='contained'
                         startIcon={<Add />}
-                        onClick={() => createNote}
+                        onClick={createNote}
                     >
                         New Note
                     </Button>
