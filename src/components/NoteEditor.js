@@ -1,18 +1,18 @@
-import { Box, Button, IconButton, Paper, TextField } from '@mui/material'
+import { Alert, Box, Button, IconButton, Paper, Snackbar, TextField } from '@mui/material'
 import React, { useCallback, useEffect, useState } from 'react'
 import { slideIn } from '../assets/Animations'
-import { ArrowBack } from '@mui/icons-material';
+import { ArrowBack, Close, Delete, Save } from '@mui/icons-material';
 import db from '../utils/db'
+import ReactMde from 'react-mde';
+import ReactMarkdown from 'react-markdown';
 
 function NoteEditor({ note, onClose, onDelete, onSave, isNewNote }) {
-    console.log('NoteEditor rendered with note:', note);
-    const [title, setTitle] = useState(note?.title || '');
-    const [content, setContent] = useState(note?.content || '');
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
     const [selectedTab, setSelectedTab] = useState('write');
     const [saveStatus, setSaveStatus] = useState({ show: false, message: '', severity: 'success' })
 
     useEffect(() => {
-        console.log('NoteEditor useEffect triggered with note:', note);
         if (note) {
             setTitle(note.title || '');
             setContent(note.content || '');
@@ -21,21 +21,38 @@ function NoteEditor({ note, onClose, onDelete, onSave, isNewNote }) {
 
     const saveNote = useCallback(async (newTitle, newContent) => {
         if (!newTitle.trim() && !newContent.trim()) {
+            setSaveStatus({
+                show: true,
+                message: 'Please fill all the fields',
+                severity: 'error'
+            });
             return;
         }
         try {
-            await db.notes.update(note.id, {
-                title: newTitle || 'Untitled Note',
-                content: newContent,
+            const updates = {
+                title: newTitle.trim(),
+                content: newContent.trim(),
                 updatedAt: new Date().toISOString(),
-                syncStatus: 'unsynced'
-            });
+                syncStatus: navigator.onLine ? 'synced' : 'unsynced'
+            };
+            if (isNewNote) {
+                await db.notes.add({
+                    ...note,
+                    ...updates
+                })
+            } else {
+                await db.notes.update(note.id, updates);
+            }
             setSaveStatus({
                 show: true,
                 message: 'Note saved successfully',
                 severity: 'success'
             });
-            onSave?.();
+
+            setTimeout(() => {
+                onSave();
+                onClose();
+            }, 1000);
         } catch (error) {
             console.error('Error saving note:', error);
             setSaveStatus({
@@ -44,10 +61,9 @@ function NoteEditor({ note, onClose, onDelete, onSave, isNewNote }) {
                 severity: 'error'
             });
         }
-    }, [note.id, onSave])
+    }, [note, onSave, onClose, isNewNote])
 
     const handleSave = () => {
-        console.log('Saving note with title:', title, 'content:', content);
         saveNote(title, content);
     }
     const handleCloseSnackbar = () => setSaveStatus(prev => ({
@@ -88,47 +104,114 @@ function NoteEditor({ note, onClose, onDelete, onSave, isNewNote }) {
                 </IconButton>
                 <Box sx={{ display: 'flex', gap: 2 }}>
                     <Button
+                        startIcon={<Save />}
                         onClick={handleSave}
                         variant="contained"
-                        color="primary"
+                        sx={{
+                            bgcolor: 'purple',
+                            color: 'red',
+                            '&:hover': { bgcolor: 'blue' },
+                            fontWeight: 'bold',
+                            borderRadius: '0.5rem',
+                            px: 3,
+                            transition: 'all 0.2s'
+                        }}
                     >
                         Save
+                    </Button>
+                    <Button
+                        startIcon={isNewNote ? <Close /> : <Delete />}
+                        onClick={handleDelete}
+                        sx={{
+                            bgcolor: 'purple',
+                            color: 'red',
+                            '&:hover': { bgcolor: 'blue' },
+                            fontWeight: 'bold',
+                            borderRadius: '0.5rem',
+                            px: 3,
+                            transition: 'all 0.2s'
+                        }}
+                    >
+                        {isNewNote ? 'Cancel' : 'Delete'}
                     </Button>
                 </Box>
             </Box>
             <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <TextField
                     fullWidth
-                    variant="outlined"
-                    placeholder="Title"
+                    variant="filled"
+                    placeholder="Note Title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     sx={{
                         '& .MuiOutlinedInput-root': {
                             borderRadius: '0.75rem',
                             bgcolor: 'white',
-                            '& fieldset': { border: 'none' },
-                            '& input': { color: 'black' }
+                            fontSize: '2rem',
+                            fontWeight: '800',
+                            color: 'black',
+                            '& before': { borderBottom: 'none' }
+                        }
+                    }}
+                    inputProps={{
+                        style: {
+                            color: 'black',
+                            padding: '1rem'
                         }
                     }}
                 />
-                <TextField
-                    fullWidth
-                    multiline
-                    variant="outlined"
-                    placeholder="Write your note here..."
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
+                <Paper
                     sx={{
-                        flexGrow: 1,
-                        '& .MuiOutlinedInput-root': {
-                            borderRadius: '0.75rem',
-                            bgcolor: 'white',
-                            '& fieldset': { border: 'none' },
-                            '& textarea': { color: 'black' }
+                        flex: 1,
+                        overflow: 'auto',
+                        borderRadius: '0.75rem',
+                        border: '2px solid black',
+                        '& .react-mde': {
+                            border: 'none',
+                            '& .mde-header': {
+                                bgcolor: 'pink',
+                                borderRadius: '0.5rem 0.5rem 0 0',
+                                broderbottom: '2px solid black'
+                            },
+                            '& .mde-tabs button': {
+                                transition: 'all 0.2s',
+                                color: 'greenyellow',
+                                '&:hover': {
+                                    color: 'black'
+                                },
+                                '& .mde-textarea-wrapper textarea': {
+                                    padding: '1rem',
+                                    fontSize: '1.1rem',
+                                    lineHeight: '1.6',
+                                    background: 'white',
+                                    color: 'black'
+                                }
+                            }
                         }
                     }}
-                />
+                >
+                    <ReactMde
+                        value={content}
+                        onChange={setContent}
+                        selectedTab={selectedTab}
+                        onTabChange={setSelectedTab}
+                        generateMarkdownPreview={markdown =>
+                            Promise.resolve(<ReactMarkdown>{markdown}</ReactMarkdown>)
+                        }
+                        toolbarCommands={[['bold', 'italic', 'header', 'link', 'code', 'unordered-list']]}
+                    />
+                    
+                </Paper>
+                <Snackbar
+                    open={saveStatus.show}
+                    autoHideDuration={3000}
+                    onClose={handleCloseSnackbar}
+                    anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+                >
+                    <Alert severity={saveStatus.severity} sx={{width: '100%'}}>
+                        {saveStatus.message}
+                    </Alert>
+                </Snackbar>
             </Box>
         </Paper>
     )

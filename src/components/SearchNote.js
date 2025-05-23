@@ -10,6 +10,9 @@ function SearchNote({search, createNote}) {
                 sx={{
                     p: 2,
                     borderRadius: '1rem',
+                    background: 'red',
+                    backdropFilter: 'blur(1rem)',
+                    boxShadow: '0 0.5rem 1rem black',
                     border: '1px solid black'
                 }}
             >

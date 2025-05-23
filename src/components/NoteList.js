@@ -58,13 +58,12 @@ function NoteList() {
     const createNewNote = async () => {
         const newNote = {
             id: crypto.randomUUID(),
-            title: 'Untitled Note',
+            title: '',
             content: '',
             updatedAt: new Date().toISOString(),
             syncStatus: 'unsynced',
             deleted: false
         };
-        console.log('Creating new note:', newNote);
         setSelectedNote(newNote);
         setIsEditorOpen(true);
         await db.notes.add(newNote);
@@ -77,7 +76,8 @@ function NoteList() {
 
     return (
         <Container maxWidth="xl" sx={{
-            height: '100%'
+            height: '100%',
+            backgroundColor: 'lightgray'
         }}>
             <SearchNote
                 search={searchNote}
