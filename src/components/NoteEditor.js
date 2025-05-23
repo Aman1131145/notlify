@@ -5,6 +5,7 @@ import { ArrowBack, Close, Delete, Save } from '@mui/icons-material';
 import db from '../utils/db'
 import ReactMde from 'react-mde';
 import ReactMarkdown from 'react-markdown';
+import { colors } from '../theme/colors';
 
 function NoteEditor({ note, onClose, onDelete, onSave, isNewNote }) {
     const [title, setTitle] = useState('');
@@ -79,10 +80,10 @@ function NoteEditor({ note, onClose, onDelete, onSave, isNewNote }) {
                 display: 'flex',
                 flexDirection: 'column',
                 animation: `${slideIn} 0.3s ease-out`,
-                background: 'yellow',
+                background: colors.components.noteEditor.background,
                 backdropFilter: 'blur(1rem)',
                 borderRadius: '1rem',
-                boxShadow: `0 0.75rem 1.5rem black`
+                boxShadow: `0 0.75rem 1.5rem ${colors.ui.hover}`
             }}
         >
             <Box
@@ -90,15 +91,15 @@ function NoteEditor({ note, onClose, onDelete, onSave, isNewNote }) {
                     display: 'flex',
                     justifyContent: 'space-between',
                     mb: 3,
-                    background: 'aqua',
+                    background: colors.components.noteEditor.header,
                     p: 2,
                     borderRadius: '0.75rem',
-                    color: 'black'
+                    color: colors.text.primary
                 }}
             >
                 <IconButton
                     onClick={onClose}
-                    sx={{ color: 'blue' }}
+                    sx={{ color: colors.primary.main }}
                 >
                     <ArrowBack />
                 </IconButton>
@@ -108,9 +109,9 @@ function NoteEditor({ note, onClose, onDelete, onSave, isNewNote }) {
                         onClick={handleSave}
                         variant="contained"
                         sx={{
-                            bgcolor: 'purple',
-                            color: 'red',
-                            '&:hover': { bgcolor: 'blue' },
+                            bgcolor: colors.primary.main,
+                            color: colors.background.paper,
+                            '&:hover': { bgcolor: colors.primary.dark },
                             fontWeight: 'bold',
                             borderRadius: '0.5rem',
                             px: 3,
@@ -123,9 +124,9 @@ function NoteEditor({ note, onClose, onDelete, onSave, isNewNote }) {
                         startIcon={isNewNote ? <Close /> : <Delete />}
                         onClick={handleDelete}
                         sx={{
-                            bgcolor: 'purple',
-                            color: 'red',
-                            '&:hover': { bgcolor: 'blue' },
+                            bgcolor: colors.secondary.main,
+                            color: colors.background.paper,
+                            '&:hover': { bgcolor: colors.secondary.dark },
                             fontWeight: 'bold',
                             borderRadius: '0.5rem',
                             px: 3,
@@ -146,16 +147,16 @@ function NoteEditor({ note, onClose, onDelete, onSave, isNewNote }) {
                     sx={{
                         '& .MuiOutlinedInput-root': {
                             borderRadius: '0.75rem',
-                            bgcolor: 'white',
+                            bgcolor: colors.background.paper,
                             fontSize: '2rem',
                             fontWeight: '800',
-                            color: 'black',
+                            color: colors.text.primary,
                             '& before': { borderBottom: 'none' }
                         }
                     }}
                     inputProps={{
                         style: {
-                            color: 'black',
+                            color: colors.text.primary,
                             padding: '1rem'
                         }
                     }}
@@ -165,26 +166,26 @@ function NoteEditor({ note, onClose, onDelete, onSave, isNewNote }) {
                         flex: 1,
                         overflow: 'auto',
                         borderRadius: '0.75rem',
-                        border: '2px solid black',
+                        border: `2px solid ${colors.ui.border}`,
                         '& .react-mde': {
                             border: 'none',
                             '& .mde-header': {
-                                bgcolor: 'pink',
+                                bgcolor: colors.components.noteEditor.toolbar,
                                 borderRadius: '0.5rem 0.5rem 0 0',
-                                broderbottom: '2px solid black'
+                                borderBottom: `2px solid ${colors.ui.border}`
                             },
                             '& .mde-tabs button': {
                                 transition: 'all 0.2s',
-                                color: 'greenyellow',
+                                color: colors.text.secondary,
                                 '&:hover': {
-                                    color: 'black'
+                                    color: colors.text.primary
                                 },
                                 '& .mde-textarea-wrapper textarea': {
                                     padding: '1rem',
                                     fontSize: '1.1rem',
                                     lineHeight: '1.6',
-                                    background: 'white',
-                                    color: 'black'
+                                    background: colors.background.paper,
+                                    color: colors.text.primary
                                 }
                             }
                         }
@@ -200,15 +201,21 @@ function NoteEditor({ note, onClose, onDelete, onSave, isNewNote }) {
                         }
                         toolbarCommands={[['bold', 'italic', 'header', 'link', 'code', 'unordered-list']]}
                     />
-                    
                 </Paper>
                 <Snackbar
                     open={saveStatus.show}
                     autoHideDuration={3000}
                     onClose={handleCloseSnackbar}
-                    anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                 >
-                    <Alert severity={saveStatus.severity} sx={{width: '100%'}}>
+                    <Alert
+                        severity={saveStatus.severity}
+                        sx={{
+                            width: '100%',
+                            bgcolor: saveStatus.severity === 'success' ? colors.status.synced : colors.status.unsynced,
+                            color: colors.background.paper
+                        }}
+                    >
                         {saveStatus.message}
                     </Alert>
                 </Snackbar>
